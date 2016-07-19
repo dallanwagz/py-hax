@@ -38,6 +38,10 @@ p.add_argument('-d',
               '--displayname',
               type=str,
               help='Display name email header (From)')
+p.add_argument('-b',
+              '--body',
+              type=str,
+              help='Body of email')
 args = p.parse_args()
 
 class mysmtp:
@@ -49,6 +53,7 @@ class mysmtp:
        self.subject = subject
        self.filename = ''
        self.displayname = ''
+       self.body = ''
 
    def send_message(self):
         
@@ -56,9 +61,6 @@ class mysmtp:
        msg['From'] = self.fromEmail
        msg['To'] = self.toEmail
        msg['Subject'] = self.subject
-       body = 'sent w/ smtplib and email.mime py libs'
-       content = MIMEText(body, 'plain')
-       msg.attach(content)
        if self.filename:
            f = file(self.filename)
            attachment = MIMEText(f.read())
@@ -70,6 +72,14 @@ class mysmtp:
        if self.displayname:
            display_name = self.displayname + "<" + self.fromEmail + ">'"
            msg.replace_header('From', display_name)
+       if self.body:
+           body = self.body
+           content = MIMEText(body, 'plain')
+           msg.attach(content)
+       else:
+           body = 'Whenever I\'m about to do something, I think, \'Would an idiot do that?\' And if they would, I do not do that thing.'
+           content = MIMEText(body, 'plain')
+           msg.attach(content)
        try: 
            print '[+] attempting to send message'
            s = smtplib.SMTP(self.server, self.port)
@@ -85,4 +95,6 @@ if args.filename:
     q.filename = args.filename
 if args.displayname:
     q.displayname = args.displayname
+if args.body:
+    q.body = args.body
 q.send_message()
