@@ -34,6 +34,10 @@ p.add_argument('-f',
               '--filename', 
               type=str, 
               help='file attachment')
+p.add_argument('-d',
+              '--displayname',
+              type=str,
+              help='Display name email header (From)')
 args = p.parse_args()
 
 class mysmtp:
@@ -44,6 +48,7 @@ class mysmtp:
        self.fromEmail = fromEmail
        self.subject = subject
        self.filename = ''
+       self.displayname = ''
 
    def send_message(self):
         
@@ -62,6 +67,9 @@ class mysmtp:
                                  filename=self.filename)
            msg.attach(attachment)
            print f
+       if self.displayname:
+           display_name = self.displayname + "<" + self.fromEmail + ">'"
+           msg.replace_header('From', display_name)
        try: 
            print '[+] attempting to send message'
            s = smtplib.SMTP(self.server, self.port)
@@ -75,4 +83,6 @@ class mysmtp:
 q = mysmtp(args.server, args.port, args.to, args.From, args.subject)
 if args.filename:
     q.filename = args.filename
+if args.displayname:
+    q.displayname = args.displayname
 q.send_message()
