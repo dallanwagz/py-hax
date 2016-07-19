@@ -70,7 +70,7 @@ class mysmtp:
            msg.attach(attachment)
            print f
        if self.displayname:
-           display_name = self.displayname + " <" + self.fromEmail + ">'"
+           display_name = self.displayname + " <" + self.fromEmail + ">"
            msg.replace_header('From', display_name)
        if self.body:
            body = self.body
